@@ -54,6 +54,11 @@ public class RewardNetworkImpl implements RewardNetwork {
 		//          the sequence diagram in the lab document
 		// TODO-08: Return the corresponding reward confirmation
 
-		return null;
+		var account = accountRepository.findByCreditCard(dining.getCreditCardNumber());
+		var restaurant = restaurantRepository.findByMerchantNumber(dining.getMerchantNumber());
+		var monetaryAmount = restaurant.calculateBenefitFor(account, dining);
+		var accountContribution = account.makeContribution(monetaryAmount);
+		accountRepository.updateBeneficiaries(account);
+		return rewardRepository.confirmReward(accountContribution, dining);
 	}
 }
